@@ -1,0 +1,14 @@
+<table>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Name</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @support_duties.each do |duty| %>
+      <%= render 'support_duty', duty: duty %>
+    <% end %>
+  </tbody>
+</table>

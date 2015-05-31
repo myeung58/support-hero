@@ -1,0 +1,10 @@
+<!-- add css for color -->
+<tr class="#{duty.state}-support-duty">
+  <!-- refactor this, and use strftime for date -->
+  <td><%= duty.assigned_at.to_date %></td>
+  <% if duty.active? %>
+  <td><%= link_to 'mark as unavailable', [duty.user, duty], method: 'PATCH', title: 'Your support duty will be automatically rescheduled' %></td>
+  <% elsif duty.unavailable? %>
+    <td><%= "unavailable" %></td>
+  <% end %>
+</tr>

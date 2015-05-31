@@ -11,23 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150529204434) do
+ActiveRecord::Schema.define(version: 20150529220335) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "support_duties", force: true do |t|
     t.datetime "assigned_at"
-    t.integer  "hero_id"
+    t.integer  "user_id"
+    t.string   "state"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "support_duties", ["hero_id"], name: "index_support_duties_on_hero_id", using: :btree
+  add_index "support_duties", ["user_id"], name: "index_support_duties_on_user_id", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "name"
-    t.string   "token"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

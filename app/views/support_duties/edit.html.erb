@@ -1,0 +1,5 @@
+<%= form_for @support_duty do |f| %>
+  <%= f.label :user_id, 'Reschedule to' %>
+  <%= f.collection_select :reschedulable_id, SupportDuty.all.sort_by(&:assigned_at), :id, :choice_option, include_blank: true %>
+  <%= f.submit 'Submit' %>
+<% end %>

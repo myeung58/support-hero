@@ -1,0 +1,15 @@
+<p><%= @user.name %></p>
+<table>
+  <thead>
+    <tr>
+      <th>Scheduled Dates</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @user.support_duties.sort_by(&:assigned_at).each do |duty| %>
+      <%= render 'support_duty', duty: duty %>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to 'back', [:root] %>

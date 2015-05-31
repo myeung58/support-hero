@@ -1,0 +1,7 @@
+<!-- add css for color -->
+<tr class="#{duty.state}-support-duty">
+  <!-- refactor this, and use strftime for date -->
+  <td><%= duty.assigned_at.to_date %></td>
+  <td><%= link_to duty.user_name, [duty.user] %></td>
+  <td><%= link_to 'reschedule', [:edit, duty] if duty.active? %></td>
+</tr>
