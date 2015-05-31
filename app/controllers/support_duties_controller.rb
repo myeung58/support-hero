@@ -1,12 +1,12 @@
 class SupportDutiesController < ApplicationController
   before_action :find_support_duty, only: [:edit, :update]
 
-  # no use page?
   def index
-    @support_duties = SupportDuty.all.includes(:user)
+    @support_duties = SupportDuty.available
   end
 
   def edit
+    @support_duties = SupportDuty.available
   end
 
   def update
@@ -25,7 +25,7 @@ class SupportDutiesController < ApplicationController
   end
 
   def support_duties_params
-    params.require(:support_duty).permit(:reschedulable_id)
+    params.require(:support_duty).permit :reschedulable_id
   end
 
   def marking_date_unavailable?
@@ -35,6 +35,6 @@ class SupportDutiesController < ApplicationController
   def reschedulable
     return @support_duty.next if marking_date_unavailable?
     return unless support_duties_params.fetch(:reschedulable_id).present?
-    SupportDuty.find support_duties_params.fetch(:reschedulable_id)
+    SupportDuty.find support_duties_params.fetch :reschedulable_id
   end
 end

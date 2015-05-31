@@ -3,7 +3,7 @@ class User < ActiveRecord::Base
 
   validates :name, presence: true
 
-  def available_on? date
+  def available_on?(date)
     unavailable_dates.exclude? date
   end
 

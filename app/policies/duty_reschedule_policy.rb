@@ -1,5 +1,5 @@
 class DutyReschedulePolicy
-  def initialize support_duty, target
+  def initialize(support_duty, target)
     @support_duty = support_duty
     @target = target
   end
@@ -19,11 +19,11 @@ class DutyReschedulePolicy
 
   def current_user_available?
     return unless current_user = @support_duty.user
-    current_user.available_on?(@support_duty.assigned_at)
+    current_user.available_on? @support_duty.assigned_at
   end
 
   def target_user_available?
     return unless target_user = @target.user
-    target_user.available_on?(@target.assigned_at)
+    target_user.available_on? @target.assigned_at
   end
 end

@@ -1,0 +1,12 @@
+.completed-support-duty {
+  color: red;
+}
+
+.current-support-duty {
+  color: green;
+  font-size: 18px;
+}
+
+.active-support-duty {
+  color: black;
+}

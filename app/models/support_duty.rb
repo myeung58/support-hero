@@ -5,10 +5,6 @@ class SupportDuty < ActiveRecord::Base
 
   delegate :token, :name, to: :user, prefix: true
 
-  scope :active, -> { where(state: 'active').sort_by &:assigned_at }
-  scope :current, -> { where(state: 'current').sort_by &:assigned_at }
-  scope :unavailable, -> { where(state: 'unavailable').sort_by &:assigned_at }
-
   attr_accessor :reschedulable_id
 
   state_machine initial: :active do
@@ -17,8 +13,13 @@ class SupportDuty < ActiveRecord::Base
     event(:mark_unavailable) { transition any - :completed => :unavailable }
   end
 
-  # refactor this out
-  def self.schedule_for rotation
+  state_machine.states.each do |state|
+    scope state.name, -> { where(state: state.name).sort_by &:assigned_at }
+  end
+  scope :available, -> { includes(:user).reject(&:unavailable?).sort_by &:assigned_at }
+
+  # for inital scheduling; can be further refactored to a separate class
+  def self.schedule_for(rotation)
     return unless rotation.present?
 
     rotation.map do |user_name|
@@ -33,7 +34,7 @@ class SupportDuty < ActiveRecord::Base
     self.class.where("assigned_at > ?", assigned_at).order("assigned_at ASC").first
   end
 
-  def reschedule_with reschedulable_support_duty
+  def reschedule_with(reschedulable_support_duty)
     return unless DutyReschedulePolicy.new(self, reschedulable_support_duty).can_reschedule?
 
     reschedulable_user = reschedulable_support_duty.user
@@ -47,11 +48,11 @@ class SupportDuty < ActiveRecord::Base
     self.mark_unavailable!
   end
 
-  def assign_current_user_to duty
+  def assign_current_user_to(duty)
     duty.update user: user
   end
 
-  def reassign_duty_for user
+  def reassign_duty_for(user)
     SupportDuty.create user: user, assigned_at: self.assigned_at
   end
 

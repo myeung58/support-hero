@@ -15,7 +15,7 @@ describe 'when a user is viewing its support duties' do
 
       expect(page).to have_content sp.assigned_at.to_date
       expect(page).to have_content user.name
-      expect(page).to have_link "mark as unavailable", "/users/#{user.id}/support_duties/#{sp.id}/edit"
+      expect(page).to have_link 'mark as unavailable', "/users/#{user.id}/support_duties/#{sp.id}/edit"
     end
   end
 end

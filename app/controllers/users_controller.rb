@@ -6,6 +6,6 @@ class UsersController < ApplicationController
 
   private
   def find_user
-    @user = User.includes(:support_duties).find(params[:id])
+    @user = User.includes(:support_duties).find params[:id]
   end
 end
