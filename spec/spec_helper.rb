@@ -4,6 +4,7 @@ require 'rails/test_help'
 require 'capybara/rspec'
 require 'capybara/rails'
 require 'database_cleaner'
+require "rake"
 
 class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
@@ -11,6 +12,8 @@ class ActiveSupport::TestCase
 
   # Add more helper methods to be used by all tests here...
 end
+
+Rails.application.load_tasks
 
 RSpec.configure do |config|
   config.include Capybara::DSL

@@ -4,8 +4,8 @@ describe "rescheduling a support duty" do
   before { Timecop.freeze "Mon, 1 June 2015".to_date }
   after { Timecop.return }
 
-  let!(:sp1) { SupportDuty.create user: user1, assigned_at: default_date }
-  let!(:sp2) { SupportDuty.create user: user2, assigned_at: assigned_date, state: state }
+  let!(:duty1) { SupportDuty.create user: user1, assigned_at: default_date }
+  let!(:duty2) { SupportDuty.create user: user2, assigned_at: assigned_date, state: state }
   let(:user1) { User.create name: "user1" }
   let(:user2) { User.create name: "user2" }
   let(:default_date) { Time.zone.now + 1.day }
@@ -15,11 +15,11 @@ describe "rescheduling a support duty" do
     let(:state) { "active" }
 
     it do
-      submit_reschedule_form sp1, sp2
+      submit_reschedule_form duty1, duty2
 
       expect(page).to have_content "Support Duty has been rescheduled"
-      expect(sp1.reload.state).to eq "unavailable"
-      expect(sp2.reload.user).to eq user1
+      expect(duty1.reload.state).to eq "unavailable"
+      expect(duty2.reload.user).to eq user1
       expect(SupportDuty.last.user).to eq user2
     end
   end
@@ -29,21 +29,21 @@ describe "rescheduling a support duty" do
     let(:state) { "completed" }
 
     it do
-      submit_reschedule_form sp1, sp2
+      submit_reschedule_form duty1, duty2
 
       expect(page).to have_content "Failed to reschedule"
-      expect(sp1.user).to eq user1
+      expect(duty1.user).to eq user1
     end
   end
 
   context "when there is no reschedulable support duty" do
-    let!(:sp2) { nil }
+    let!(:duty2) { nil }
 
     it do
-      submit_reschedule_form sp1
+      submit_reschedule_form duty1
 
       expect(page).to have_content "Failed to reschedule"
-      expect(sp1.user).to eq user1
+      expect(duty1.user).to eq user1
     end
   end
 
@@ -52,11 +52,11 @@ describe "rescheduling a support duty" do
     let(:state) { "active" }
 
     it do
-      mark_unavailable sp1
+      mark_unavailable duty1
 
       expect(page).to have_content "Support Duty has been rescheduled"
-      expect(sp1.reload.state).to eq 'unavailable'
-      expect(sp2.reload.user).to eq user1
+      expect(duty1.reload.state).to eq 'unavailable'
+      expect(duty2.reload.user).to eq user1
       expect(SupportDuty.last.user).to eq user2
     end
   end

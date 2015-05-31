@@ -33,7 +33,7 @@ class SupportDutiesController < ApplicationController
   end
 
   def reschedulable
-    return SupportDuty.following(@support_duty) if marking_date_unavailable?
+    return @support_duty.next if marking_date_unavailable?
     return unless support_duties_params.fetch(:reschedulable_id).present?
     SupportDuty.find support_duties_params.fetch(:reschedulable_id)
   end

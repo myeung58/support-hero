@@ -6,26 +6,31 @@ class SupportDuty < ActiveRecord::Base
   delegate :token, :name, to: :user, prefix: true
 
   scope :active, -> { where(state: 'active').sort_by &:assigned_at }
+  scope :current, -> { where(state: 'current').sort_by &:assigned_at }
   scope :unavailable, -> { where(state: 'unavailable').sort_by &:assigned_at }
 
   attr_accessor :reschedulable_id
 
   state_machine initial: :active do
     event(:start) { transition active: :current }
-    event(:complete) { transition curent: :completed }
+    event(:complete) { transition current: :completed }
     event(:mark_unavailable) { transition any - :completed => :unavailable }
   end
 
+  # refactor this out
   def self.schedule_for rotation
     return unless rotation.present?
 
     rotation.map do |user_name|
-      create user: User.find_by(name: user_name), assigned_at: DutySchedulePolicy.new.next_schedulable_date
+      create(
+        user: User.find_by(name: user_name),
+        assigned_at: DutySchedulePolicy.new.next_schedulable_date
+      ) { |duty| duty.start! if duty.assigned_at.today? }
     end
   end
 
-  def self.following duty
-    where("assigned_at > ?", duty.assigned_at).order("assigned_at ASC").first
+  def next
+    self.class.where("assigned_at > ?", assigned_at).order("assigned_at ASC").first
   end
 
   def reschedule_with reschedulable_support_duty
